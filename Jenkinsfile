@@ -1,42 +1,49 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('checkout the code from github'){
-            steps{
-                 git url: 'https://github.com/Ashadow9/Staragile-Banking-and-Finance-Domain-Project/'
-                 echo 'github url checkout'
+    stages {
+        stage('Checkout the code from GitHub') {
+            steps {
+                git url: 'https://github.com/Ashadow9/Staragile-Banking-and-Finance-Domain-Project/'
+                echo 'GitHub URL checked out'
             }
         }
-        stage('codecompile with red'){
-            steps{
-                echo 'starting compiling'
+        stage('Code compile with Maven') {
+            steps {
+                echo 'Starting compilation'
                 sh 'mvn compile'
             }
         }
-        stage('codetesting with red'){
-            steps{
+        stage('Code testing with Maven') {
+            steps {
+                echo 'Running unit tests'
                 sh 'mvn test'
             }
         }
-        stage('qa with red'){
-            steps{
+        stage('Run Selenium Tests') {
+            steps {
+                echo 'Running Selenium tests'
+                sh 'mvn test -Dtest=YourSeleniumTestClassName' // Adjust the class name accordingly
+            }
+        }
+        stage('QA with Checkstyle') {
+            steps {
                 sh 'mvn checkstyle:checkstyle'
             }
         }
-        stage('package with red'){
-            steps{
+        stage('Package with Maven') {
+            steps {
                 sh 'mvn package'
             }
         }
-        stage('run dockerfile'){
-          steps{
-               sh 'docker build -t myimg .'
-           }
-         }
-        stage('port expose'){
-            steps{
+        stage('Run Dockerfile') {
+            steps {
+                sh 'docker build -t myimg .'
+            }
+        }
+        stage('Port Expose') {
+            steps {
                 sh 'docker run -dt -p 8091:8091 --name c000 myimg'
             }
-        }   
+        }
     }
 }
